@@ -54,7 +54,3 @@ function clean(){
 }
 
 $('.collapse').collapse();
-
-$('#datepicker').datepicker({
-    uiLibrary: 'bootstrap4'
-});
