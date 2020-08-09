@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- FontAwesome -->
+    <script src="https://kit.fontawesome.com/2d06a70dc3.js" crossorigin="anonymous"></script>
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <!-- Static Files -->
+    <link rel="stylesheet" href="/css/main.css">
+    <title>Pruebas</title>
+</head>
+<body>
+    <div class="container mt-3 mb-3">
+        <div id="navbar">
+            <h2><b>Medición de Calidad del Aire</b></h2>
+            <p id="p1">Mediante el uso de drones</p>
+        </div>
+        <div id="accordion">
+            <div class="card mt-2">
+              <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                  <button class="btn btn-link-dark collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                    <b>¿Cómo funciona?</b>
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                <div class="card-body">
+                    <b>1.</b> Escoger un tipo de contaminante o variable meteorológica de la cual se espera recopilar datos. <br> 
+                    <b>2.</b> Seleccionar un rango de fecha en el que se adquirieron los datos. <br>
+                    <b>3.</b> Realizar la busqueda. <br>
+                    <b>4.</b> Si lo desea, podrá generar un archivo csv con los datos obtenidos. <br>
+                </div>
+              </div>
+            </div>
+        </div>
+        <div class="mt-2" id="divOps">
+            <br>
+            <div class="row mr-auto ml-auto" style="width: 70%">
+                <div class="col-md-6">
+                    <label class="mr-sm-2" for="inlineFormCustomSelect"><b>Localización</b></label><br>
+                    <select class="custom-select mr-sm-2" id="localiz">
+                        <option selected value="0">Seleccione un lugar</option>
+                        <option value="1">Lugar 1</option>
+                        <option value="2">Lugar 2</option>
+                        <option value="3">Lugar 3</option>
+                    </select><br><br>
+                    <!-- <button type="button" class="btn btn-dark btn-block" data-toggle="modal" data-target="#exampleModal">Escoger un lugar</button><br>
+                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="exampleModalLabel">Localización</h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <div id="map" style="height: 300px; width: 100%;"></div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                                    <button type="button" class="btn btn-primary">Aceptar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                    <label class="mr-sm-2" for="inlineFormCustomSelect"><b>Variable</b></label><br>
+                    <select class="custom-select mr-sm-2" id="variable1">
+                        <option selected value="0">Seleccione una variable</option>
+                        <option value="PM1.0">Material Particulado PM1.0</option>
+                        <option value="PM2.5">Material Particulado PM2.5</option>
+                        <option value="PM10">Material Particulado PM10</option>
+                        <option value="CO">Monóxido de Carbono (CO)</option>
+                        <option value="CO2">Dióxido de Carbono (CO2)</option>
+                        <option value="O3">Ozono (O3)</option>
+                        <option value="SO2">Dióxido de Azufre (SO2)</option>
+                        <option value="NH3">Amoniaco (NH3)</option>
+                        <option value="Temperatura">Temperatura (°C)</option>
+                        <option value="Humedad">Humedad (%)</option>
+                    </select>
+                </div>
+                <div class="col-md-6" id="dateCol">
+                    <label class="mr-sm-2" for="inlineFormCustomSelect"><b>Desde</b></label><br>
+                    <input type="date" name="bday" max="2030-12-31" min="2000-01-01" class="form-control" id="Fdesde">
+                    <br>
+                    <label class="mr-sm-2" for="inlineFormCustomSelect"><b>Hasta</b></label><br>
+                    <input type="date" name="bday" max="2030-12-31" min="2000-01-01" class="form-control" id="Fhasta">
+                </div>
+            </div><br>
+            <div class="text-center col-md-12">
+                <button type="button" class="btn btn-dark mr-3" onclick="search()">Buscar</button>
+                <button type="button" class="btn btn-danger ml-3" onclick="clean()">Limpiar</button>
+            </div><br>
+        </div>
+        <div class="table-resposive container mt-3" id="divTable">
+            <table class="table table-bordered table-hover" id="table1">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Variable</th>
+                        <th>Datos</th>
+                        <th>Fecha</th>
+                        <th>Hora</th>
+                        <th>Localización</th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+        <div class="text-center mt-3"><button type="button" class="btn btn-dark mt-2" onclick="exportTableToCSV('data.csv')">Generar Archivo</button></div>
+        <div class="container row mt-4" id="foot">
+            <div class="col-8 col-sm-8 col-md-9 col-lg-10" id="borderImg">
+                <img src="/img/SergioArboledaLogo.png" alt="Sergio Arboleda Logo">
+            </div>
+            <div class="col-4 col-sm-4 col-md-3 col-lg-2" id="icons">
+                <div class="row">
+                    <div class="col-3 col-sm-3 col-md-3"><a href="https://www.instagram.com/usergioarboleda" target="_blank"><i class="fab fa-instagram fa-2x" id="a1"></i></a></div>
+                    <div class="col-3 col-sm-3 col-md-3"><a href="https://www.facebook.com/usergioarboleda" target="_blank"><i class="fab fa-facebook-square fa-2x" id="a1"></i></a></div>
+                    <div class="col-3 col-sm-3 col-md-3"><a href="https://www.twitter.com/USergioArboleda" target="_blank"><i class="fab fa-twitter fa-2x" id="a1"></i></a></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="/js/jquery-3.5.1.min.js"></script>
+<script src="/js/exportFile.js"></script>
+<script src="/js/main.js"></script>
+<!-- Bootstrap -->
+<!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script> -->
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+<!-- SweetAlert 2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
+<!-- Google Maps API -->
+<!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA53S0d4Bz5QIiM0gYdtSK5ZXKiMIZYGMo&callback=initMap" type="text/javascript"></script> -->
+</html>
