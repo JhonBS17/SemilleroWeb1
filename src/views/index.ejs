@@ -47,28 +47,76 @@
                         <option value="2">Lugar 2</option>
                         <option value="3">Lugar 3</option>
                     </select><br><br>
-                    <!-- <button type="button" class="btn btn-dark btn-block" data-toggle="modal" data-target="#exampleModal">Escoger un lugar</button><br>
                     <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog" role="document">
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Localización</h5>
+                                    <h5 class="modal-title" id="exampleModalLabel">Variables</h5>
                                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                     </button>
                                 </div>
                                 <div class="modal-body">
-                                    <div id="map" style="height: 300px; width: 100%;"></div>
+                                    <div class="form-check">
+                                        <input class="form-check-input cb-element" type="checkbox" value="" id="checkall">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                          Seleccionar todo
+                                        </label>
+                                    </div>
+                                    <hr>
+                                    <div class="form-check">
+                                        <input class="form-check-input cb-element" type="checkbox" value="" id="defaultCheck1">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                          Material Particulado PM1.0
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input cb-element" type="checkbox" value="" id="defaultCheck1">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                          Material Particulado PM2.5
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input cb-element" type="checkbox" value="" id="defaultCheck1">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                          Material Particulado PM10
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input cb-element" type="checkbox" value="" id="defaultCheck1">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                          Monóxido de Carbono (CO)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input cb-element" type="checkbox" value="" id="defaultCheck1">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                          Dióxido de Carbono (CO2)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input cb-element" type="checkbox" value="" id="defaultCheck1">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                          Ozono (O3)
+                                        </label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input class="form-check-input cb-element" type="checkbox" value="" id="defaultCheck1">
+                                        <label class="form-check-label" for="defaultCheck1">
+                                          Gas Natural
+                                        </label>
+                                    </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                                    <button type="button" class="btn btn-primary">Aceptar</button>
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelarCheck">Cancelar</button>
+                                    <button type="button" class="btn btn-success" data-dismiss="modal">Aceptar</button>
                                 </div>
                             </div>
                         </div>
-                    </div> -->
+                    </div>
                     <label class="mr-sm-2" for="inlineFormCustomSelect"><b>Variable</b></label><br>
-                    <select class="custom-select mr-sm-2" id="variable1">
+                    <button type="button" class="btn btn-dark btn-block" data-toggle="modal" data-target="#exampleModal">Escoger variables</button><br>
+                    <!-- <select class="custom-select mr-sm-2" id="variable1">
                         <option selected value="0">Seleccione una variable</option>
                         <option value="PM1.0">Material Particulado PM1.0</option>
                         <option value="PM2.5">Material Particulado PM2.5</option>
@@ -80,14 +128,14 @@
                         <option value="NH3">Amoniaco (NH3)</option>
                         <option value="Temperatura">Temperatura (°C)</option>
                         <option value="Humedad">Humedad (%)</option>
-                    </select>
+                    </select> -->
                 </div>
                 <div class="col-md-6" id="dateCol">
                     <label class="mr-sm-2" for="inlineFormCustomSelect"><b>Desde</b></label><br>
-                    <input type="date" name="bday" max="2030-12-31" min="2000-01-01" class="form-control" id="Fdesde">
+                    <input type="datetime-local" id="Fdesde" name="meeting-time" class="form-control" min="2000-01-01T00:00" max="2030-12-31T00:00">
                     <br>
                     <label class="mr-sm-2" for="inlineFormCustomSelect"><b>Hasta</b></label><br>
-                    <input type="date" name="bday" max="2030-12-31" min="2000-01-01" class="form-control" id="Fhasta">
+                    <input type="datetime-local" id="Fhasta" name="meeting-time" class="form-control" min="2000-01-01T00:00" max="2030-12-31T00:00">
                 </div>
             </div><br>
             <div class="text-center col-md-12">
