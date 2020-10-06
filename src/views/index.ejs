@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!-- FontAwesome -->
     <script src="https://kit.fontawesome.com/2d06a70dc3.js" crossorigin="anonymous"></script>
     <!-- Bootstrap -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+        integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
     <!-- Static Files -->
     <link rel="stylesheet" href="/css/main.css">
-    <title>Pruebas</title>
+    <title>ecoDatos</title>
 </head>
+
 <body>
     <div class="container mt-3 mb-3">
         <div id="navbar">
@@ -19,123 +22,81 @@
         </div>
         <div id="accordion">
             <div class="card mt-2">
-              <div class="card-header" id="headingOne">
-                <h5 class="mb-0">
-                  <button class="btn btn-link-dark collapsed" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
-                    <b>¿Cómo funciona?</b>
-                  </button>
-                </h5>
-              </div>
-              <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
-                <div class="card-body">
-                    <b>1.</b> Escoger un tipo de contaminante o variable meteorológica de la cual se espera recopilar datos. <br> 
-                    <b>2.</b> Seleccionar un rango de fecha en el que se adquirieron los datos. <br>
-                    <b>3.</b> Realizar la busqueda. <br>
-                    <b>4.</b> Si lo desea, podrá generar un archivo csv con los datos obtenidos. <br>
+                <div class="card-header" id="headingOne">
+                    <h5 class="mb-0">
+                        <button class="btn btn-link-dark collapsed" data-toggle="collapse" data-target="#collapseOne"
+                            aria-expanded="false" aria-controls="collapseOne">
+                            <b>¿Cómo funciona?</b>
+                        </button>
+                    </h5>
                 </div>
-              </div>
+                <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordion">
+                    <div class="card-body">
+                        <b>1.</b> Escoger uno o varios tipos de contaminante/variable meteorológica de las cuales se
+                        espera recopilar datos. <br>
+                        <b>2.</b> Seleccionar un rango de fecha en el que se adquirieron los datos. <br>
+                        <b>3.</b> Realizar la busqueda. <br>
+                        <b>4.</b> Si lo desea, podrá generar un archivo de Excel con los datos obtenidos y un promedio
+                        de estos por día. <br>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Variables</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-check">
+                            <input class="form-check-input cb-element" type="checkbox" value="" id="checkall">
+                            <label class="form-check-label" for="checkall">
+                                Seleccionar todo
+                            </label>
+                        </div>
+                        <hr>
+                        <% const arr1 = ['Material Particulado PM1.0', 'Material Particulado PM2.5', 'Material Particulado PM10', 'Monóxido de Carbono (CO)', 'Dióxido de Carbono (CO2)', 'Ozono (O3)', 'Temperatura', 'Humedad', 'Presión'];
+                        const arr2 = ['PM1_0', 'PM2_5', 'PM10', 'CO', 'CO2', 'O3', 'Temperatura', 'Humedad', 'Presion'];
+                        
+                        for (var i=0; i < arr1.length; i++){ %>
+                        <div class="form-check">
+                            <input class="form-check-input cb-element ops1" type="checkbox" value="" id=<%= arr2[i] %>>
+                            <label class="form-check-label" for="defaultCheck1">
+                                <%= arr1[i] %>
+                            </label>
+                        </div>
+                        <%}%>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="cancelarC()">Cancelar</button>
+                        <button type="button" class="btn btn-success" data-dismiss="modal">Aceptar</button>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="mt-2" id="divOps">
             <br>
             <div class="row mr-auto ml-auto" style="width: 70%">
                 <div class="col-md-6">
-                    <label class="mr-sm-2" for="inlineFormCustomSelect"><b>Localización</b></label><br>
-                    <select class="custom-select mr-sm-2" id="localiz">
-                        <option selected value="0">Seleccione un lugar</option>
-                        <option value="1">Lugar 1</option>
-                        <option value="2">Lugar 2</option>
-                        <option value="3">Lugar 3</option>
-                    </select><br><br>
-                    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="exampleModalLabel">Variables</h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-check">
-                                        <input class="form-check-input cb-element" type="checkbox" value="" id="checkall">
-                                        <label class="form-check-label" for="defaultCheck1">
-                                          Seleccionar todo
-                                        </label>
-                                    </div>
-                                    <hr>
-                                    <div class="form-check">
-                                        <input class="form-check-input cb-element" type="checkbox" value="" id="defaultCheck1">
-                                        <label class="form-check-label" for="defaultCheck1">
-                                          Material Particulado PM1.0
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input cb-element" type="checkbox" value="" id="defaultCheck1">
-                                        <label class="form-check-label" for="defaultCheck1">
-                                          Material Particulado PM2.5
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input cb-element" type="checkbox" value="" id="defaultCheck1">
-                                        <label class="form-check-label" for="defaultCheck1">
-                                          Material Particulado PM10
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input cb-element" type="checkbox" value="" id="defaultCheck1">
-                                        <label class="form-check-label" for="defaultCheck1">
-                                          Monóxido de Carbono (CO)
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input cb-element" type="checkbox" value="" id="defaultCheck1">
-                                        <label class="form-check-label" for="defaultCheck1">
-                                          Dióxido de Carbono (CO2)
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input cb-element" type="checkbox" value="" id="defaultCheck1">
-                                        <label class="form-check-label" for="defaultCheck1">
-                                          Ozono (O3)
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input cb-element" type="checkbox" value="" id="defaultCheck1">
-                                        <label class="form-check-label" for="defaultCheck1">
-                                          Gas Natural
-                                        </label>
-                                    </div>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal" id="cancelarCheck">Cancelar</button>
-                                    <button type="button" class="btn btn-success" data-dismiss="modal">Aceptar</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <label class="mr-sm-2" for="inlineFormCustomSelect"><b>Variable</b></label><br>
-                    <button type="button" class="btn btn-dark btn-block" data-toggle="modal" data-target="#exampleModal">Escoger variables</button><br>
-                    <!-- <select class="custom-select mr-sm-2" id="variable1">
-                        <option selected value="0">Seleccione una variable</option>
-                        <option value="PM1.0">Material Particulado PM1.0</option>
-                        <option value="PM2.5">Material Particulado PM2.5</option>
-                        <option value="PM10">Material Particulado PM10</option>
-                        <option value="CO">Monóxido de Carbono (CO)</option>
-                        <option value="CO2">Dióxido de Carbono (CO2)</option>
-                        <option value="O3">Ozono (O3)</option>
-                        <option value="SO2">Dióxido de Azufre (SO2)</option>
-                        <option value="NH3">Amoniaco (NH3)</option>
-                        <option value="Temperatura">Temperatura (°C)</option>
-                        <option value="Humedad">Humedad (%)</option>
-                    </select> -->
+                    <label class="mr-sm-2" for="inlineFormCustomSelect"><b>Desde</b></label><br>
+                    <input type="datetime-local" id="Fdesde" name="meeting-time" class="form-control"
+                        min="2000-01-01T00:00" max="2030-12-31T00:00"><br>
                 </div>
                 <div class="col-md-6" id="dateCol">
-                    <label class="mr-sm-2" for="inlineFormCustomSelect"><b>Desde</b></label><br>
-                    <input type="datetime-local" id="Fdesde" name="meeting-time" class="form-control" min="2000-01-01T00:00" max="2030-12-31T00:00">
-                    <br>
                     <label class="mr-sm-2" for="inlineFormCustomSelect"><b>Hasta</b></label><br>
-                    <input type="datetime-local" id="Fhasta" name="meeting-time" class="form-control" min="2000-01-01T00:00" max="2030-12-31T00:00">
+                    <input type="datetime-local" id="Fhasta" name="meeting-time" class="form-control"
+                        min="2000-01-01T00:00" max="2030-12-31T00:00">
+                </div>
+            </div>
+            <div class="row mr-auto ml-auto" style="width: 70%" id="variable">
+                <div class="col-md-6 container">
+                    <label class="mr-sm-2" for="inlineFormCustomSelect"><b>Variable</b></label><br>
+                    <button type="button" class="btn btn-dark btn-block" data-toggle="modal" data-target="#exampleModal">Escoger variables</button><br>
                 </div>
             </div><br>
             <div class="text-center col-md-12">
@@ -143,21 +104,14 @@
                 <button type="button" class="btn btn-danger ml-3" onclick="clean()">Limpiar</button>
             </div><br>
         </div>
+        <p class="ml-4 mt-2" style="margin: 0px;">Vista Previa</p>
+        <hr style="margin: 8px;">
         <div class="table-resposive container mt-3" id="divTable">
             <table class="table table-bordered table-hover" id="table1">
-                <thead>
-                    <tr>
-                        <th>ID</th>
-                        <th>Variable</th>
-                        <th>Datos</th>
-                        <th>Fecha</th>
-                        <th>Hora</th>
-                        <th>Localización</th>
-                    </tr>
-                </thead>
+                
             </table>
         </div>
-        <div class="text-center mt-3"><button type="button" class="btn btn-dark mt-2" onclick="exportTableToCSV('data.csv')">Generar Archivo</button></div>
+        <div id="butt" class="text-center mt-3" style="display: none;"><button type="button" class="btn btn-dark mt-2" id="genExcel">Generar Archivo</button></div>
         <div class="container row mt-4" id="foot">
             <div class="col-8 col-sm-8 col-md-9 col-lg-10" id="borderImg">
                 <img src="/img/SergioArboledaLogo.png" alt="Sergio Arboleda Logo">
@@ -173,14 +127,16 @@
     </div>
 </body>
 <script src="/js/jquery-3.5.1.min.js"></script>
+<script src="/js/xlsx.full.min.js"></script>
+<script src="/js/FileSaver.min.js"></script>
 <script src="/js/exportFile.js"></script>
 <script src="/js/main.js"></script>
+<!-- Google Maps -->
+<!-- <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA53S0d4Bz5QIiM0gYdtSK5ZXKiMIZYGMo&callback=initMap"></script> -->
 <!-- Bootstrap -->
 <!-- <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script> -->
 <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
 <!-- SweetAlert 2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@9"></script>
-<!-- Google Maps API -->
-<!-- <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyA53S0d4Bz5QIiM0gYdtSK5ZXKiMIZYGMo&callback=initMap" type="text/javascript"></script> -->
 </html>

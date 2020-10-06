@@ -55,9 +55,16 @@ img {
     color: white;
 }
 
+th, td {
+    resize: both;
+}
+
 @media screen and (max-width: 767px) {
     h2 {
         font-size: 1.7em;
+    }
+    #variable {
+        padding-top: 1.4em;
     }
 }
 
@@ -75,8 +82,4 @@ img {
     h2 {
         font-size: 5.5vw;
     }
-}
-
-th, td {
-    resize: both;
 }

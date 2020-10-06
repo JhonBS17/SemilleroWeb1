@@ -2,18 +2,20 @@
 var data;
 
 $.ajax({
-    url: "https://h4ks8u0iblvt8qn-sensores.adb.us-ashburn-1.oraclecloudapps.com/ords/sensores/data/datos",
+    url: "/data",
+    method: "GET",
     async: false,
     contentType: "application/json; charset=UTF-8",
     success: function (result) {
-        data = result.items;
+        data = result;
     }
 });
 
 function search() {
     const fechaD = $("#Fdesde").val();
     const fechaH = $("#Fhasta").val();
-    if (fechaD == "" || fechaH == "" || $("#variable1 :selected").val() == 0) {
+    const lengthCheck = $('.ops1:checked').length;
+    if (fechaD == "" || fechaH == "" || lengthCheck == 0) {
         Swal.fire(
             'Error!',
             'Se deben llenar todos los campos',
@@ -21,22 +23,24 @@ function search() {
         )
     } else {
         $("#table1").empty();
-        var tr1 = '<thead><tr><th>ID</th><th>Variable</th><th>Datos</th><th>Fecha</th><th>Hora</th>\
-                <th>Localización</th></tr></thead>';
+        var tr1 = '<thead><tr><th>Fecha</th><th>Hora</th>';
+        for (var j = 0; j < lengthCheck; j++) {
+            tr1 += '<th>' + $('.ops1:checked')[j].id + '</th>';
+        }
+        tr1 += '</thead>';
         var cont = 0;
         for (var i = 0; i < data.length; i++) {
-            const fecha = data[i].fechainsercion.substring(0, 10);
-            if ($("#variable1 :selected").val() == data[i].tipodato && (fecha >= fechaD && fecha <= fechaH)) {
-                tr1 += '<tr id="tr2"><td>' + data[i].iddato + '</td>\
-                <td>' + data[i].tipodato + '</td>\
-                <td>' + data[i].dato + '</td>\
-                <td>' + data[i].fechainsercion.substring(0, 10) + '</td>\
-                <td>' + data[i].fechainsercion.substring(11, 19) + '</td>\
-                <td>' + data[i].localizacion + '</td></tr>';
-                cont += 1;
+            const fecha = data[i].fechainsercion;
+            if (fecha >= fechaD && fecha <= fechaH) {
+                tr1 += '<tr id="tr2"><td>' + data[i].fechainsercion.substring(0, 10) + '</td><td>' + 
+                data[i].fechainsercion.substring(11, 19) + '</td>';
+                for (var k = 0; k < lengthCheck; k++) { 
+                    tr1 += '<td>' + data[i][($('.ops1:checked')[k].id).toLowerCase()] + '</td>';
+                }
+                tr1 += '</tr>';
+                cont +=1;
             }
         }
-        $("#table1").append(tr1);
         if (cont == 0) {
             Swal.fire(
                 'Error!',
@@ -44,14 +48,37 @@ function search() {
                 'error'
             )
         }
+        $("#table1").append(tr1);
+        $("#butt").css("display", "block");
     }
 }
 
 function clean() {
-    $('#variable1').prop('selectedIndex', 0);
+    cancelarC();
     $("#Fdesde").val("");
     $("#Fhasta").val("");
 }
+
+// $('#descargar').click(function () {
+
+//     var data1 = [];
+
+//     $('#table1 tr').each(function() {
+//         var arr1 = [];
+//         for (let i = 0; i < this.cells.length; i++) {
+//             arr1.push(this.cells[i].innerHTML);    
+//         }
+//         data1.push(arr1);
+//     });
+
+//     $.ajax({
+//         url: '/download',
+//         type: 'POST',
+//         data: {
+//             datos: data1
+//         }
+//     });
+// });
 
 $('#checkall').change(function () {
     $('.cb-element').prop('checked', this.checked);
@@ -66,8 +93,6 @@ $('.cb-element').change(function () {
     }
 });
 
-$( "#cancelarCheck" ).click(function() {
+function cancelarC(){
     $('[type="checkbox"]').prop('checked', false);
-});
-
-$('.collapse').collapse();
+}
