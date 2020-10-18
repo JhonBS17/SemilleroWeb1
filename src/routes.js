@@ -1,8 +1,8 @@
 const express = require('express'),
     router = express.Router(),
-    request = require('request'),
-    { generateExcel } = require('./config/fileExcel');
-const excel = require('exceljs');
+    request = require('request');
+//     { generateExcel } = require('./config/fileExcel');
+// const excel = require('exceljs');
 
 router.get('/', (req, res) => {
     res.render('index');
