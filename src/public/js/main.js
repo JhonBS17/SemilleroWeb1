@@ -47,6 +47,7 @@ function search() {
                 'No se han encotrado datos',
                 'error'
             )
+            return false;
         }
         $("#table1").append(tr1);
         $("#butt").css("display", "block");
