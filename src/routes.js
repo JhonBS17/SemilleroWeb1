@@ -1,8 +1,6 @@
 const express = require('express'),
     router = express.Router(),
     request = require('request');
-//     { generateExcel } = require('./config/fileExcel');
-// const excel = require('exceljs');
 
 router.get('/', (req, res) => {
     res.render('index');
@@ -18,11 +16,5 @@ router.get('/data', (req, res) => {
             res.jsonp(data);
         });
 });
-
-// router.post('/download', async (req, res) => {
-//     res.setHeader('Content-Type', 'text/xlsx');
-//     res.setHeader('Content-Disposition', 'attachment; filename=test.xlsx');
-//     await generateExcel(req.body.datos).xlsx.write(res);
-// });
 
 module.exports = router;
