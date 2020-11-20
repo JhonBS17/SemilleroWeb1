@@ -1,4 +1,3 @@
-
 var data;
 
 $.ajax({
@@ -10,6 +9,18 @@ $.ajax({
         data = result;
     }
 });
+
+function compare(a, b) {
+    if (a.fechainsercion < b.fechainsercion) {
+        return -1;
+    }
+    if (a.fechainsercion > b.fechainsercion) {
+        return 1;
+    }
+    return 0;
+}
+
+data.sort(compare);
 
 var variables = {
     'PM1_0': 'PM1.0',
@@ -47,13 +58,13 @@ function search() {
         for (var i = 0; i < data.length; i++) {
             const fecha = data[i].fechainsercion;
             if (fecha >= fechaD && fecha <= fechaH) {
-                tr1 += '<tr id="tr2"><td>' + data[i].fechainsercion.substring(0, 10) + '</td><td>' + 
-                data[i].fechainsercion.split("T")[1].split("Z")[0] + '</td>';
+                tr1 += '<tr id="tr2"><td>' + data[i].fechainsercion.substring(0, 10) + '</td><td>' +
+                    data[i].fechainsercion.split("T")[1].split("Z")[0] + '</td>';
                 for (var k = 0; k < lengthCheck; k++) {
                     tr1 += '<td>' + data[i][($('.ops1:checked')[k].id).toLowerCase()] + '</td>';
                 }
                 tr1 += '</tr>';
-                cont +=1;
+                cont += 1;
             }
         }
         if (cont == 0) {
@@ -75,27 +86,6 @@ function clean() {
     $("#Fhasta").val("");
 }
 
-// $('#descargar').click(function () {
-
-//     var data1 = [];
-
-//     $('#table1 tr').each(function() {
-//         var arr1 = [];
-//         for (let i = 0; i < this.cells.length; i++) {
-//             arr1.push(this.cells[i].innerHTML);    
-//         }
-//         data1.push(arr1);
-//     });
-
-//     $.ajax({
-//         url: '/download',
-//         type: 'POST',
-//         data: {
-//             datos: data1
-//         }
-//     });
-// });
-
 $('#checkall').change(function () {
     $('.cb-element').prop('checked', this.checked);
 });
@@ -109,6 +99,6 @@ $('.cb-element').change(function () {
     }
 });
 
-function cancelarC(){
+function cancelarC() {
     $('[type="checkbox"]').prop('checked', false);
 }

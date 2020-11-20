@@ -1,9 +1,9 @@
 var data1 = [];
-var wb = XLSX.utils.book_new();
 
+// Añadir los datos de la tabla en el arreglo data1
 function information(){
     $('#table1 tr').each(function() {
-        var arr1 = [];
+        var arr1 = []; // Array temporal
         for (let i = 0; i < this.cells.length; i++) {
             arr1.push(this.cells[i].innerHTML);    
         }
@@ -12,6 +12,7 @@ function information(){
     return;
 }
 
+// Añadiendo codificación al archivo
 function s2ab(s) {
     var buf = new ArrayBuffer(s.length);
     var view = new Uint8Array(buf);
@@ -19,45 +20,55 @@ function s2ab(s) {
     return buf;
 }
 
+// Generar los demás atributos del archivo Excel
 $("#genExcel").click(function() {
 
-    information();
-    // const v1 = data1[0]; 
+    // Crear un nuevo archivo de Excel
+    var wb = XLSX.utils.book_new();
 
+    information(); // Llenando el array data1 con los datos correspondientes
+
+    // Añadiendo separación entre los datos netos y el promedio de los datos
     data1.push([], Object.assign([],data1[0]));
     data1[data1.length-1].splice(1, 1);
 
-    // promedio
+    // Generando el promedio de los datos por día
 
-    var vals1 = [], cont = 1;
-    vals1.push(data1[1][0]);
+    var vals1 = [],
+    count = Array.apply(null, new Array(data1[0].length-2)).map(Number.prototype.valueOf,0); 
+    vals1.push(data1[1]); // Añadiendo el atributo fecha del primer dato (fila) de la tabla
     const length1 = data1.length;
 
-    for (var j = 1; j < length1-2; j++) {
-        if (!vals1.includes(data1[j][0])) {
-            data1.push(vals1);
-            vals1 = [];
-            vals1.push(data1[j][0]);
-            cont = 1;    
-        }
-        for (var k = 2; k < data1[0].length; k++){
-            if (vals1.length != data1[0].length-1){
-                vals1.push(0);
+    for (var j = 2; j < length1-2; j++) {
+        if (!vals1.includes(data1[j][0]) || j == (length1-3)) { // Si el arreglo vals1 no incluye la fecha de la fila j
+            // Dividiendo sobre el total
+            for (let w = 1; w < vals1.length; w++) {
+                vals1[w] /= count[w-1];
             }
-            vals1[k-1] += parseInt(data1[j][k]);
-            vals1[k-1] /= cont;
+            console.log(vals1);
+            data1.push(vals1);
+            count = Array.apply(null, new Array(data1[0].length-2)).map(Number.prototype.valueOf,0); 
+            vals1 = Array.apply(null, new Array(data1[0].length)).map(Number.prototype.valueOf,0); 
+            vals1.push(data1[j][0]);
         }
-        cont += 1;
+        // Recorrer la fila j 
+        for (var k = 2; k < data1[0].length; k++){
+            // Verificando que no se tomen en cuenta los valores iguales a 0
+            if (data1[j][k] != 0) {
+                count[k-2] += 1;
+                vals1[k-1] += parseInt(data1[j][k]);
+            }
+        }
     }
 
-    data1.push(vals1);
-
+    // Agregar una hoja al archivo Excel
     wb.SheetNames.push("Datos");
-    var ws_data = data1;
+    var ws_data = data1; data1 = [];
     var ws = XLSX.utils.aoa_to_sheet(ws_data);
     wb.Sheets["Datos"] = ws;
 
+    // Escribiendo el archivo Excel mediante los datos recolectados
     var wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'binary' });
 
-    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'test.xlsx');
+    saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'dataSensores.xlsx');
 });
