@@ -37,7 +37,7 @@ var variables = {
 }
 
 function search() {
-    console.log(data);
+
     const fechaD = $("#Fdesde").val();
     const fechaH = $("#Fhasta").val();
     const lengthCheck = $('.ops1:checked').length;
@@ -61,7 +61,7 @@ function search() {
                 tr1 += '<tr id="tr2"><td>' + data[i].fechainsercion.substring(0, 10) + '</td><td>' +
                     data[i].fechainsercion.split("T")[1].split("Z")[0] + '</td>';
                 for (var k = 0; k < lengthCheck; k++) {
-                    tr1 += '<td>' + data[i][($('.ops1:checked')[k].id).toLowerCase()] + '</td>';
+                    tr1 += '<td>' + parseInt(data[i][($('.ops1:checked')[k].id).toLowerCase()]) + '</td>';
                 }
                 tr1 += '</tr>';
                 cont += 1;
