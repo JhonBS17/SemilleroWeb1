@@ -1,5 +1,6 @@
 var data;
 
+// Extraer los datos del servicio RESTful en Oracle Cloud
 $.ajax({
     url: "/data",
     method: "GET",
@@ -10,6 +11,7 @@ $.ajax({
     }
 });
 
+// Ordenar los datos por su fecha de inserción
 function compare(a, b) {
     if (a.fechainsercion < b.fechainsercion) {
         return -1;
@@ -36,18 +38,20 @@ var variables = {
     'Presion': 'Presion'
 }
 
+// Buscar los datos según los filtros de fecha y variables contaminantes
 function search() {
 
     const fechaD = $("#Fdesde").val();
     const fechaH = $("#Fhasta").val();
     const lengthCheck = $('.ops1:checked').length;
-    if (fechaD == "" || fechaH == "" || lengthCheck == 0) {
+    if (fechaD == "" || fechaH == "" || lengthCheck == 0) { // Si hay un campo que no esté lleno
         Swal.fire(
             'Error!',
             'Se deben llenar todos los campos',
             'error'
         )
     } else {
+        // Se construye la tabla con los datos filtrados
         $("#table1").empty();
         var tr1 = '<thead><tr><th>Fecha (Año-Mes-Día)</th><th>Hora</th>';
         for (var j = 0; j < lengthCheck; j++) {
@@ -67,7 +71,7 @@ function search() {
                 cont += 1;
             }
         }
-        if (cont == 0) {
+        if (cont == 0) { 
             Swal.fire(
                 'Error!',
                 'No se han encotrado datos',
@@ -75,17 +79,28 @@ function search() {
             )
             return false;
         }
-        $("#table1").append(tr1);
-        $("#butt").css("display", "block");
+        // Se hacen visibles los objetos correspondientes
+        $("#table1").append(tr1); var m = 0, items = '';
+        $("#table1 thead tr th").each(function(){
+            if (m >= 2) {
+                items += '<li><label><input type="checkbox" class="itemsV" value="'+this.innerHTML+'">'+this.innerHTML+'</label></li>';
+            }
+            m += 1;
+        });
+        $("#dropV").append(items);
+        $("#divTable").css("display", "block");
+        $(".lines").css("display", "block");
     }
 }
 
+// Limpiar los campos de fecha y variables seleccionadas
 function clean() {
     cancelarC();
     $("#Fdesde").val("");
     $("#Fhasta").val("");
 }
 
+// Seleccionar todas las variables mediante un checkbox
 $('#checkall').change(function () {
     $('.cb-element').prop('checked', this.checked);
 });
@@ -99,6 +114,15 @@ $('.cb-element').change(function () {
     }
 });
 
+// Cancelar el seleccionado de todas las variables
 function cancelarC() {
     $('[type="checkbox"]').prop('checked', false);
 }
+
+$(".checkbox-menu").on("change", "input[type='checkbox']", function() {
+    $(this).closest("li").toggleClass("active", this.checked);
+ });
+ 
+ $(document).on('click', '.allow-focus', function (e) {
+   e.stopPropagation();
+ });

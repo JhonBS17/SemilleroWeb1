@@ -59,6 +59,38 @@ th, td {
     resize: both;
 }
 
+.checkbox-menu li label {
+    display: block;
+    padding: 3px 10px;
+    clear: both;
+    font-weight: normal;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+    margin:0;
+    transition: background-color .4s ease;
+}
+.checkbox-menu li input {
+    margin: 0px 5px;
+    top: 2px;
+    position: relative;
+}
+
+.checkbox-menu li.active label {
+    background-color: #cbcbff;
+    font-weight:bold;
+}
+
+.checkbox-menu li label:hover,
+.checkbox-menu li label:focus {
+    background-color: #f5f5f5;
+}
+
+.checkbox-menu li.active label:hover,
+.checkbox-menu li.active label:focus {
+    background-color: #b8b8ff;
+}
+
 @media screen and (max-width: 767px) {
     h2 {
         font-size: 1.7em;
@@ -66,8 +98,11 @@ th, td {
     #variable {
         padding-top: 1.4em;
     }
+    #butGraf {
+        padding-top: 10px;
+    }
 }
-
+ 
 @media screen and (max-width: 500px) {
     img {
         width: 7em;
@@ -81,5 +116,8 @@ th, td {
     }
     h2 {
         font-size: 5.5vw;
+    }
+    #dropdownMenu1 {
+        width: 35vw;
     }
 }

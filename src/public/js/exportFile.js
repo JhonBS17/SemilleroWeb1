@@ -1,7 +1,8 @@
-var data1 = [];
+var data1 = [], datos1 = {};
 
 // Añadir los datos de la tabla en el arreglo data1
 function information() {
+    data1 = [];
     $('#table1 tr').each(function () {
         var arr1 = []; // Array temporal
         for (let i = 0; i < this.cells.length; i++) {
@@ -23,11 +24,7 @@ function s2ab(s) {
     return buf;
 }
 
-// Generar los demás atributos del archivo Excel
-$("#genExcel").click(function () {
-
-    // Crear un nuevo archivo de Excel
-    var wb = XLSX.utils.book_new();
+function datos() {
 
     information(); // Llenando el array data1 con los datos correspondientes
 
@@ -58,7 +55,6 @@ $("#genExcel").click(function () {
             for (let w = 1; w < vals1.length; w++) {
                 vals1[w] /= count[w - 1];
             }
-            console.log('j: ' + j + ' -> ' + vals1);
             data2.push(vals1);
             // Verificando que no sea la ultima fila de datos
             if (j != (length1 - 1)) {
@@ -68,6 +64,16 @@ $("#genExcel").click(function () {
             }
         }
     }
+    return data2;
+}
+
+// Generar los demás atributos del archivo Excel
+$("#genExcel").click(function () {
+
+    // Crear un nuevo archivo de Excel
+    var wb = XLSX.utils.book_new();
+
+    data2 = datos();
 
     // Agregar una hoja al archivo Excel con los datos netos
     wb.SheetNames.push("Datos Netos");
@@ -86,3 +92,179 @@ $("#genExcel").click(function () {
 
     saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'dataSensores.xlsx');
 });
+
+// Generar un objeto con los datos de cada contaminante y sus respectivas fechas
+function graph() {
+
+    if ($(".itemsV:checked").length == 0 || $("#typeChart").val() == "0") {
+        Swal.fire(
+            'Error!',
+            'No se han escogido variables',
+            'error'
+        )
+        return false;
+    } else {
+        $("#canvasDiv").empty();
+        $("#canvasDiv").append('<canvas id="popChart" style="display: none;"></canvas>');
+        var popCanvas = document.getElementById("popChart").getContext("2d");
+        switch ($("#typeChart").val()) {
+            case "1": 
+                barChart(datos1, $(".itemsV:checked")[0].defaultValue, popCanvas);
+                break;
+            case "2": 
+                lineChart(datos1, $(".itemsV:checked")[0].defaultValue, popCanvas);
+                break;
+            case "3": 
+                line_bar_Chart(datos1, $(".itemsV:checked")[0].defaultValue, popCanvas);
+                break;
+        }
+    }
+}
+
+// Descargar la gráfica como imagen en formato .png
+function downloadImage() {
+    $("#popChart").get(0).toBlob(function (blob) {
+        saveAs(blob, 'gráfica1.png');
+    })
+}
+
+function seeMenu() {
+
+    $("#selectVal").css("display", "");
+    $(".sep").css("display", "block");
+    datos1 = {};
+
+    var p = 0,
+    data2 = datos();
+
+    // Establecer las llaves (keys) del objeto
+    for (var k = 0; k < data2[0].length; k++) {
+        datos1[data2[0][k]] = [];
+    }
+
+    // Llenar cada arreglo de cada llave con los datos de promedio por día
+    Object.keys(datos1).forEach(function (key) {
+        for (var i = 1; i < data2.length; i++) {
+            datos1[key].push(data2[i][p]);
+        }
+        p += 1;
+    });
+
+}
+
+function showCanva() {
+    $("#popChart").css("display", "");
+    $("#downImg").css("display", "");
+}
+
+// Generar una gráfica de barras de las variables que correspondan
+function barChart(datos, contam, popCanvas) {
+
+    showCanva();
+
+    barChart = new Chart(popCanvas, {
+        type: 'bar',
+        data: {
+            labels: datos['Fecha (Año-Mes-Día)'],
+            datasets: [{
+                label: contam,
+                data: datos[contam],
+                backgroundColor: 'rgba(42, 64, 228, 0.8)'
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: contam
+                    }
+                }],
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Tiempo (días)'
+                    }
+                }]
+            }
+        }
+    });
+}
+
+// Generar una gráfica de línea de las variables que correspondan
+function lineChart(datos, contam, popCanvas) {
+
+    showCanva();
+
+    var lineChart = new Chart(popCanvas, {
+        type: 'line',
+        data: {
+            labels: datos['Fecha (Año-Mes-Día)'],
+            datasets: [{
+                label: contam,
+                data: datos[contam],
+                borderColor: 'rgba(42, 64, 228, 0.8)',
+                borderWidth: 2,
+                backgroundColor: 'rgba(254, 254, 254, 254)'
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: contam
+                    }
+                }],
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Tiempo (días)'
+                    }
+                }]
+            }
+        }
+    });
+}
+
+// Generar una gráfica combinada de barras y líneas de las variables que correspondan
+function line_bar_Chart(datos, contam, popCanvas) {
+
+    showCanva();
+
+    var line_bar_Chart = new Chart(popCanvas, {
+        data: {
+            labels: datos['Fecha (Año-Mes-Día)'],
+            datasets: [{
+                type: 'line',
+                label: contam,
+                data: datos[contam],
+                borderColor: 'rgba(42, 64, 228, 0.8)',
+                borderWidth: 2,
+                backgroundColor: 'rgba(254, 254, 254, 254)'
+            },
+            {
+                type: 'bar',
+                label: contam,
+                data: datos[contam],
+                backgroundColor: 'rgba(255, 123, 47, 0.8)',
+            }]
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: contam
+                    }
+                }],
+                xAxes: [{
+                    scaleLabel: {
+                        display: true,
+                        labelString: 'Tiempo (días)'
+                    }
+                }]
+            }
+        }
+    });
+}
