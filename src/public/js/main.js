@@ -65,7 +65,11 @@ function search() {
                 tr1 += '<tr id="tr2"><td>' + data[i].fechainsercion.substring(0, 10) + '</td><td>' +
                     data[i].fechainsercion.split("T")[1].split("Z")[0] + '</td>';
                 for (var k = 0; k < lengthCheck; k++) {
-                    tr1 += '<td>' + parseInt(data[i][($('.ops1:checked')[k].id).toLowerCase()]) + '</td>';
+                    var num = parseInt(data[i][($('.ops1:checked')[k].id).toLowerCase()]);
+                    if (isNaN(num)) {
+                        num = 0
+                    }
+                    tr1 += '<td>' + num + '</td>';
                 }
                 tr1 += '</tr>';
                 cont += 1;
@@ -81,6 +85,7 @@ function search() {
         }
         // Se hacen visibles los objetos correspondientes
         $("#table1").append(tr1); var m = 0, items = '';
+        $("#dropV").empty();
         $("#table1 thead tr th").each(function(){
             if (m >= 2) {
                 items += '<li><label><input type="checkbox" class="itemsV" value="'+this.innerHTML+'">'+this.innerHTML+'</label></li>';
@@ -88,8 +93,10 @@ function search() {
             m += 1;
         });
         $("#dropV").append(items);
+        $("#typeChart").val(0);
         $("#divTable").css("display", "block");
         $(".lines").css("display", "block");
+        hideGraph();
     }
 }
 
@@ -126,3 +133,10 @@ $(".checkbox-menu").on("change", "input[type='checkbox']", function() {
  $(document).on('click', '.allow-focus', function (e) {
    e.stopPropagation();
  });
+
+ function hideGraph() {
+    $("#selectVal").css("display", "none");
+    $(".sep").css("display", "none");
+    $("#popChart").css("display", "none");
+    $("#downImg").css("display", "none");
+ }

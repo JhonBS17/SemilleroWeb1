@@ -93,29 +93,47 @@ $("#genExcel").click(function () {
     saveAs(new Blob([s2ab(wbout)], { type: "application/octet-stream" }), 'dataSensores.xlsx');
 });
 
+var labelsY = {
+    'PM1.0': 'PPM',
+    'PM2.5': 'PPM',
+    'PM10': 'PPM',
+    'CO (MQ7)': 'PPM',
+    'CO (MQ6)': 'PPM',
+    'CO2': 'mg/m^3',
+    'O3': 'PPB',
+    'SO2': 'mg/m^3',
+    'Temperatura': '°C',
+    'Humedad': 'g/m^3',
+    'Presion': 'Pa'
+}
+
 // Generar un objeto con los datos de cada contaminante y sus respectivas fechas
 function graph() {
 
-    if ($(".itemsV:checked").length == 0 || $("#typeChart").val() == "0") {
+    if ($(".itemsV:checked").length == 0 || $(".itemsV:checked").length > 2) {
         Swal.fire(
             'Error!',
-            'No se han escogido variables',
+            'Debe escoger al menos una variable (máximo 2)',
+            'error'
+        )
+        return false;
+    } else if ($("#typeChart").val() == "0"){
+        Swal.fire(
+            'Error!',
+            'No ha seleccionado el tipo de gráfica',
             'error'
         )
         return false;
     } else {
         $("#canvasDiv").empty();
-        $("#canvasDiv").append('<canvas id="popChart" style="display: none;"></canvas>');
+        $("#canvasDiv").append('<canvas id="popChart"></canvas>');
         var popCanvas = document.getElementById("popChart").getContext("2d");
         switch ($("#typeChart").val()) {
             case "1": 
-                barChart(datos1, $(".itemsV:checked")[0].defaultValue, popCanvas);
+                barChart(datos1, $(".itemsV:checked"), popCanvas);
                 break;
             case "2": 
-                lineChart(datos1, $(".itemsV:checked")[0].defaultValue, popCanvas);
-                break;
-            case "3": 
-                line_bar_Chart(datos1, $(".itemsV:checked")[0].defaultValue, popCanvas);
+                lineChart(datos1, $(".itemsV:checked"), popCanvas);
                 break;
         }
     }
@@ -157,29 +175,69 @@ function showCanva() {
     $("#downImg").css("display", "");
 }
 
+function optionsChart(datos, contam, properties) {
+
+    var datasets = [],
+    yAxes = [],
+    direction = ['left', 'right'];
+
+    for (var i=0; i < contam.length; i++) {
+        datasets.push(
+            {
+                label: contam[i].defaultValue,
+                data: datos[contam[i].defaultValue],
+                fill: properties[0]
+            }
+        )
+        datasets[i][properties[1]] = 'rgba(' + Math.floor(Math.random() * 256)+', ' + 
+                Math.floor(Math.random() * 256) + ', ' + Math.floor(Math.random() * 256) + ', 0.8)'
+
+        if (contam.length == 2) {
+            datasets[i]['yAxisID'] = 'y-axis-' + (i+1) + '';
+            yAxes.push({
+                type: 'linear',
+                display: true,
+                labelString: labelsY[contam[i].defaultValue],
+                id: 'y-axis-' + (i+1) + '',
+                position: direction[i]
+            });
+        } else {
+            yAxes.push({
+                scaleLabel: {
+                    display: true,
+                    labelString: labelsY[contam[0].defaultValue]
+                }
+            });
+        }
+    }
+
+    if (contam.length == 2) {
+        yAxes[1]['gridLines'] = {
+            drawOnChartArea: false,
+        };
+    }
+
+    return [datasets, yAxes];
+
+}
+
 // Generar una gráfica de barras de las variables que correspondan
 function barChart(datos, contam, popCanvas) {
 
+    var [datasets, yAxes] = optionsChart(datos, contam, [true, 'backgroundColor']);
+
     showCanva();
 
-    barChart = new Chart(popCanvas, {
+    var barChart = new Chart(popCanvas, {
         type: 'bar',
         data: {
             labels: datos['Fecha (Año-Mes-Día)'],
-            datasets: [{
-                label: contam,
-                data: datos[contam],
-                backgroundColor: 'rgba(42, 64, 228, 0.8)'
-            }]
+            datasets: datasets
         },
         options: {
+            responsive: true,
             scales: {
-                yAxes: [{
-                    scaleLabel: {
-                        display: true,
-                        labelString: contam
-                    }
-                }],
+                yAxes: yAxes,
                 xAxes: [{
                     scaleLabel: {
                         display: true,
@@ -194,70 +252,20 @@ function barChart(datos, contam, popCanvas) {
 // Generar una gráfica de línea de las variables que correspondan
 function lineChart(datos, contam, popCanvas) {
 
+    var [datasets, yAxes] = optionsChart(datos, contam, [false, 'borderColor']);
+
     showCanva();
 
     var lineChart = new Chart(popCanvas, {
         type: 'line',
         data: {
             labels: datos['Fecha (Año-Mes-Día)'],
-            datasets: [{
-                label: contam,
-                data: datos[contam],
-                borderColor: 'rgba(42, 64, 228, 0.8)',
-                borderWidth: 2,
-                backgroundColor: 'rgba(254, 254, 254, 254)'
-            }]
+            datasets: datasets
         },
         options: {
+            responsive: true,
             scales: {
-                yAxes: [{
-                    scaleLabel: {
-                        display: true,
-                        labelString: contam
-                    }
-                }],
-                xAxes: [{
-                    scaleLabel: {
-                        display: true,
-                        labelString: 'Tiempo (días)'
-                    }
-                }]
-            }
-        }
-    });
-}
-
-// Generar una gráfica combinada de barras y líneas de las variables que correspondan
-function line_bar_Chart(datos, contam, popCanvas) {
-
-    showCanva();
-
-    var line_bar_Chart = new Chart(popCanvas, {
-        data: {
-            labels: datos['Fecha (Año-Mes-Día)'],
-            datasets: [{
-                type: 'line',
-                label: contam,
-                data: datos[contam],
-                borderColor: 'rgba(42, 64, 228, 0.8)',
-                borderWidth: 2,
-                backgroundColor: 'rgba(254, 254, 254, 254)'
-            },
-            {
-                type: 'bar',
-                label: contam,
-                data: datos[contam],
-                backgroundColor: 'rgba(255, 123, 47, 0.8)',
-            }]
-        },
-        options: {
-            scales: {
-                yAxes: [{
-                    scaleLabel: {
-                        display: true,
-                        labelString: contam
-                    }
-                }],
+                yAxes: yAxes,
                 xAxes: [{
                     scaleLabel: {
                         display: true,
