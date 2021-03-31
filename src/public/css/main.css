@@ -39,7 +39,6 @@ img {
 
 #foot {
     background-color: #00437a;
-    height: 90px;
     margin-left: 0px;
     margin-right: 0px;
 }
@@ -116,6 +115,9 @@ th, td {
     }
     h2 {
         font-size: 5.5vw;
+    }
+    #p1 {
+        font-size: 3.2vw;
     }
     #dropdownMenu1 {
         width: 35vw;
