@@ -1,15 +1,43 @@
-var data;
-
 // Extraer los datos del servicio RESTful en Oracle Cloud
-$.ajax({
-    url: "/data",
-    method: "GET",
-    async: false,
-    contentType: "application/json; charset=UTF-8",
-    success: function (result) {
-        data = result;
-    }
-});
+function extraerData(fechamin1, fechamax1) {
+
+    var data;
+
+    $.ajax({
+        url: "https://h4ks8u0iblvt8qn-sensores.adb.us-ashburn-1.oraclecloudapps.com/ords/sensores/data/datos",
+        method: "GET",
+        async: false,
+        data: {
+            fechamin: updateDate(fechamin1),
+            fechamax: updateDate(fechamax1)
+        },
+        contentType: "application/json; charset=UTF-8",
+        success: function (result) {
+            data = result;
+        }
+    });
+
+    data.items.sort(compare);
+
+    return data.items;
+}
+
+// Convertir la fecha al formato que acepta la base de datos de Oracle para realizar las consultas
+function updateDate(fecha) {
+    var x = fecha.split('T'),
+        fecha1 = x[0].split('-');
+
+    var hour = x[1].substr(0, 2), 
+        hour12 = hour % 12 || 12,
+        ampm = (hour < 12 || hour === 24) ? " AM" : " PM";
+
+    return fecha1[2] + "-" + monthName(fecha1[1]) + '-' + fecha1[0] + " " + hour12 + x[1].substr(2, 3) + ":00" + ampm;
+}
+
+// Retornar el mes con base en el número ingresado
+function monthName(month) {
+    return ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'][month - 1];
+}
 
 // Ordenar los datos por su fecha de inserción
 function compare(a, b) {
@@ -21,8 +49,6 @@ function compare(a, b) {
     }
     return 0;
 }
-
-data.sort(compare);
 
 var variables = {
     'PM1_0': 'PM1.0',
@@ -58,24 +84,23 @@ function search() {
             tr1 += '<th>' + variables[($('.ops1:checked')[j].id)] + '</th>';
         }
         tr1 += '</thead>';
-        var cont = 0;
+        var cont = 0,
+            data = extraerData(fechaD, fechaH);
         for (var i = 0; i < data.length; i++) {
-            const fecha = data[i].fechainsercion;
-            if (fecha >= fechaD && fecha <= fechaH) {
-                tr1 += '<tr id="tr2"><td>' + data[i].fechainsercion.substring(0, 10) + '</td><td>' +
-                    data[i].fechainsercion.split("T")[1].split("Z")[0] + '</td>';
-                for (var k = 0; k < lengthCheck; k++) {
-                    var num = parseInt(data[i][($('.ops1:checked')[k].id).toLowerCase()]);
-                    if (isNaN(num)) {
-                        num = 0
-                    }
-                    tr1 += '<td>' + num + '</td>';
+            tr1 += '<tr id="tr2"><td>' + data[i].fechainsercion.substring(0, 10) + '</td><td>' +
+                data[i].fechainsercion.split("T")[1].split("Z")[0] + '</td>';
+            for (var k = 0; k < lengthCheck; k++) {
+                var num = parseInt(data[i][($('.ops1:checked')[k].id).toLowerCase()]);
+                if (isNaN(num)) {
+                    num = 0
                 }
-                tr1 += '</tr>';
-                cont += 1;
+                tr1 += '<td>' + num + '</td>';
             }
+            tr1 += '</tr>';
+            cont += 1;
+
         }
-        if (cont == 0) { 
+        if (cont == 0) {
             Swal.fire(
                 'Error!',
                 'No se han encotrado datos',
@@ -86,9 +111,9 @@ function search() {
         // Se hacen visibles los objetos correspondientes
         $("#table1").append(tr1); var m = 0, items = '';
         $("#dropV").empty();
-        $("#table1 thead tr th").each(function(){
+        $("#table1 thead tr th").each(function () {
             if (m >= 2) {
-                items += '<li><label><input type="checkbox" class="itemsV" value="'+this.innerHTML+'">'+this.innerHTML+'</label></li>';
+                items += '<li><label><input type="checkbox" class="itemsV" value="' + this.innerHTML + '">' + this.innerHTML + '</label></li>';
             }
             m += 1;
         });
@@ -126,17 +151,17 @@ function cancelarC() {
     $('[type="checkbox"]').prop('checked', false);
 }
 
-$(".checkbox-menu").on("change", "input[type='checkbox']", function() {
+$(".checkbox-menu").on("change", "input[type='checkbox']", function () {
     $(this).closest("li").toggleClass("active", this.checked);
- });
- 
- $(document).on('click', '.allow-focus', function (e) {
-   e.stopPropagation();
- });
+});
 
- function hideGraph() {
+$(document).on('click', '.allow-focus', function (e) {
+    e.stopPropagation();
+});
+
+function hideGraph() {
     $("#selectVal").css("display", "none");
     $(".sep").css("display", "none");
     $("#popChart").css("display", "none");
     $("#downImg").css("display", "none");
- }
+}
